@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
     <title>Galaxy Grammar Attack (Simple Present | Auxiliary verb)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@600;700&display=swap');
@@ -20,14 +21,17 @@
             padding: 0;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
-        body {
+        body, html {
             background-color: #000;
             color: #fff;
             font-family: 'Rajdhani', sans-serif;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            touch-action: none; /* Previene scroll en móviles */
+            touch-action: none; /* Previene scroll y gestos en móviles */
         }
 
         #gameContainer {
@@ -44,6 +48,7 @@
             display: block;
             width: 100%;
             height: 100%;
+            touch-action: none;
         }
 
         /* Capas de Interfaz (UI Overlays) */
@@ -72,15 +77,16 @@
             font-family: 'Press Start 2P', cursive;
             color: var(--primary);
             text-shadow: 0 0 10px var(--primary), 0 0 20px #0055ff;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-size: clamp(1.2rem, 4vw, 3rem);
             text-align: center;
             margin-bottom: 10px;
             line-height: 1.5;
+            padding: 0 10px;
         }
 
         .title-sub {
             font-family: 'Rajdhani', sans-serif;
-            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(0.9rem, 3vw, 1.5rem);
             color: #fff;
             text-shadow: none;
             display: block;
@@ -90,40 +96,44 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             color: #aaa;
             margin-bottom: 20px;
             text-align: center;
-            max-width: 80%;
+            max-width: 90%;
         }
         
         .instructions {
-            font-size: 1rem;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
             color: var(--success);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
             font-weight: bold;
             background: rgba(0, 255, 102, 0.1);
             padding: 10px 20px;
             border-radius: 8px;
             border: 1px solid var(--success);
+            max-width: 90%;
+            line-height: 1.5;
         }
 
         .btn {
-            background: transparent;
+            background: rgba(0, 0, 0, 0.8);
             border: 2px solid var(--primary);
             color: var(--primary);
             font-family: 'Press Start 2P', cursive;
-            font-size: 1rem;
-            padding: 15px 30px;
-            margin: 10px;
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            padding: 15px 25px;
+            margin: 8px;
             cursor: pointer;
             transition: all 0.2s;
             text-transform: uppercase;
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) inset, 0 0 10px rgba(0, 240, 255, 0.2);
+            width: 80%;
+            max-width: 300px;
         }
 
-        .btn:hover {
+        .btn:hover, .btn:active {
             background: var(--primary);
             color: #000;
             box-shadow: 0 0 20px var(--primary);
@@ -131,10 +141,10 @@
         }
 
         .btn-normal { border-color: #bb00ff; color: #bb00ff; }
-        .btn-normal:hover { background: #bb00ff; box-shadow: 0 0 20px #bb00ff; color: #fff;}
+        .btn-normal:hover, .btn-normal:active { background: #bb00ff; box-shadow: 0 0 20px #bb00ff; color: #fff;}
         
         .btn-advanced { border-color: var(--danger); color: var(--danger); }
-        .btn-advanced:hover { background: var(--danger); box-shadow: 0 0 20px var(--danger); color: #fff;}
+        .btn-advanced:hover, .btn-advanced:active { background: var(--danger); box-shadow: 0 0 20px var(--danger); color: #fff;}
 
         /* HUD (Heads Up Display) */
         #hud {
@@ -142,7 +152,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -152,10 +162,11 @@
 
         .hud-text {
             font-family: 'Press Start 2P', cursive;
-            font-size: clamp(0.6rem, 2vw, 1rem);
+            font-size: clamp(0.5rem, 2vw, 0.8rem);
             color: #fff;
             text-shadow: 2px 2px 0 #000;
             flex: 1;
+            line-height: 1.8;
         }
 
         .hud-right {
@@ -167,17 +178,17 @@
             border: 2px solid var(--primary);
             color: var(--primary);
             font-family: 'Press Start 2P', cursive;
-            font-size: 1.2rem;
-            padding: 10px 15px;
+            font-size: clamp(0.8rem, 3vw, 1.2rem);
+            padding: 8px 12px;
             cursor: pointer;
             border-radius: 5px;
-            pointer-events: auto; /* Permite clic en el HUD */
+            pointer-events: auto;
             transition: all 0.2s;
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-            margin: 0 10px;
+            margin: 0 5px;
         }
 
-        .pause-btn:hover {
+        .pause-btn:hover, .pause-btn:active {
             background: var(--primary);
             color: #000;
             box-shadow: 0 0 15px var(--primary);
@@ -186,27 +197,30 @@
 
         #questionBox {
             position: absolute;
-            top: 80px;
+            top: 70px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid var(--primary);
             border-radius: 10px;
-            padding: 15px 30px;
+            padding: 10px 20px;
             text-align: center;
-            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-size: clamp(1rem, 4vw, 1.8rem);
             font-weight: bold;
             color: #fff;
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
             z-index: 5;
             pointer-events: none;
             white-space: nowrap;
+            max-width: 95vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .blank {
             color: var(--primary);
             border-bottom: 3px solid var(--primary);
-            padding: 0 10px;
+            padding: 0 5px;
         }
 
         /* Cuenta regresiva */
@@ -231,17 +245,18 @@
         /* Mensajes motivacionales */
         #messageBox {
             position: absolute;
-            top: 45%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: 'Press Start 2P', cursive;
-            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            font-size: clamp(1rem, 4vw, 2.5rem);
             text-align: center;
             z-index: 6;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s;
             line-height: 1.5;
+            width: 100%;
         }
 
         .msg-correct { color: var(--success); text-shadow: 0 0 20px var(--success), 0 0 40px #fff; }
@@ -260,17 +275,14 @@
     <canvas id="gameCanvas"></canvas>
 
     <div id="hud" class="hidden">
-        <div class="hud-text">SCORE: <span id="scoreDisplay">0</span><br><span id="levelDisplay" style="color:#aaa; font-size:0.7em;">Lvl: Beginner</span></div>
+        <div class="hud-text">SCORE: <span id="scoreDisplay">0</span><br><span id="levelDisplay" style="color:#aaa;">Lvl: Beginner</span></div>
         
-        <!-- Botón de Pausa -->
         <button class="pause-btn" onclick="togglePause()">❚❚</button>
 
         <div class="hud-text hud-right">LIVES: <span id="livesDisplay">❤ x 10</span><br><div id="powerUpIndicator">WEAPON UP!</div></div>
     </div>
 
-    <div id="questionBox" class="hidden">
-        <!-- La pregunta se inserta vía JS -->
-    </div>
+    <div id="questionBox" class="hidden"></div>
 
     <div id="messageBox" class=""></div>
 
@@ -279,9 +291,10 @@
         <h1 class="title">
             GALAXY<br>GRAMMAR ATTACK
             <span class="title-sub">(Simple Present | Auxiliary verb)</span>
+            <span class="title-sub">Developed by : Hugo Luque</span>
         </h1>
-        <p class="subtitle">Shoot or crash into the ship with the correct auxiliary verb!</p>
-        <p class="instructions">Developed: by Hugo Luque  / 🚀 MOVE: Arrows / Drag<br>💥 SHOOT: Space / Tap<br>⏸️ PAUSE: 'P' or 'Esc'</p>
+        <p class="subtitle">Destroy the correct auxiliary verb!</p>
+        <p class="instructions">📱 MOBILE/PC: Press and hold to move & shoot<br>💻 KEYBOARD: Arrows to move, Space to shoot<br>⏸️ PAUSE: 'P' or 'Esc'</p>
         <button class="btn" onclick="startGame('beginner')">Beginner</button>
         <button class="btn btn-normal" onclick="startGame('normal')">Normal</button>
         <button class="btn btn-advanced" onclick="startGame('advanced')">Advanced</button>
@@ -306,7 +319,21 @@
 </div>
 
 <script>
-    // --- SISTEMA DE AUDIO ---
+    // --- FULLSCREEN SYSTEM ---
+    function requestFullScreen() {
+        const docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen().catch((err) => {
+                console.log("Error attempting to enable fullscreen:", err.message);
+            });
+        } else if (docElm.webkitRequestFullScreen) { /* Safari */
+            docElm.webkitRequestFullScreen();
+        } else if (docElm.msRequestFullscreen) { /* IE11 */
+            docElm.msRequestFullscreen();
+        }
+    }
+
+    // --- AUDIO SYSTEM ---
     const AudioSys = {
         ctx: null,
         bgmOsc: null,
@@ -324,17 +351,19 @@
         },
 
         playTone(freq, type, duration, vol) {
-            if (!this.ctx) return;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start();
-            osc.stop(this.ctx.currentTime + duration);
+            if (!this.ctx || this.ctx.state !== 'running') return;
+            try {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + duration);
+            } catch(e) {}
         },
 
         shoot() {
@@ -343,34 +372,36 @@
         },
 
         explosion() {
-            if (!this.ctx) return;
-            const bufferSize = this.ctx.sampleRate * 0.3; 
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-            }
-            const noise = this.ctx.createBufferSource();
-            noise.buffer = buffer;
-            
-            const filter = this.ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 1000;
+            if (!this.ctx || this.ctx.state !== 'running') return;
+            try {
+                const bufferSize = this.ctx.sampleRate * 0.3; 
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
 
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
 
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.ctx.destination);
-            noise.start();
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start();
+            } catch(e){}
         },
 
         correct() {
-            this.playTone(523.25, 'sine', 0.1, 0.2); // C5
-            setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.2), 100); // E5
-            setTimeout(() => this.playTone(783.99, 'sine', 0.2, 0.2), 200); // G5
+            this.playTone(523.25, 'sine', 0.1, 0.2); 
+            setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.2), 100); 
+            setTimeout(() => this.playTone(783.99, 'sine', 0.2, 0.2), 200); 
         },
 
         wrong() {
@@ -407,7 +438,7 @@
         }
     };
 
-    // --- GENERADOR DE PREGUNTAS ---
+    // --- QUESTION GENERATOR ---
     const grammarData = {
         subjects: {
             "I": { type: "1s" }, "you": { type: "2" }, "we": { type: "pl" }, "they": { type: "pl" },
@@ -482,7 +513,7 @@
         return { text: questionStr, answer: correctAnswer, options: options };
     }
 
-    // --- MOTOR DEL JUEGO ---
+    // --- GAME ENGINE ---
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -494,7 +525,7 @@
     const messageBox = document.getElementById('messageBox');
     const powerUpInd = document.getElementById('powerUpIndicator');
 
-    let state = 'MENU'; // MENU, COUNTDOWN, PLAYING, PAUSED, GAMEOVER
+    let state = 'MENU'; 
     let score = 0;
     let lives = 10;
     let difficulty = 'beginner';
@@ -512,7 +543,7 @@
     let stars = [];
 
     const motivationalWords = [
-        "GOOD!", "WONDERFUL!", "YOU ARE A GENIUS!", 
+        "GOOD!", "WONDERFUL!", "GENIUS!", 
         "EXCELLENT!", "PERFECT!", "AMAZING!", 
         "OUTSTANDING!", "GREAT JOB!", "BRILLIANT!"
     ];
@@ -527,15 +558,13 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Controles
+    // --- MOBILE & KEYBOARD CONTROLS ---
     const keys = { ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false, a: false, d: false, w: false, s: false, ' ': false };
     const pointer = { x: width / 2, y: height - 100, active: false, isDown: false };
 
     window.addEventListener('keydown', e => { 
         if(keys.hasOwnProperty(e.key)) keys[e.key] = true; 
         if(e.key === ' ' && state === 'PLAYING') e.preventDefault(); 
-        
-        // Atajo de pausa
         if ((e.key === 'p' || e.key === 'P' || e.key === 'Escape') && (state === 'PLAYING' || state === 'PAUSED')) {
             togglePause();
         }
@@ -545,32 +574,50 @@
     function updatePointerPos(e) {
         if(state !== 'PLAYING') return;
         pointer.active = true;
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        let clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+        let clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+        
         pointer.x = clientX;
-        pointer.y = clientY - 50;
+        pointer.y = e.touches ? clientY - 80 : clientY - 40;
     }
 
-    window.addEventListener('mousemove', updatePointerPos);
-    window.addEventListener('mousedown', e => { 
-        if(e.target.tagName !== 'BUTTON') { pointer.isDown = true; updatePointerPos(e); }
+    canvas.addEventListener('mousedown', e => {
+        e.preventDefault();
+        pointer.isDown = true;
+        updatePointerPos(e);
     });
-    window.addEventListener('mouseup', () => { pointer.isDown = false; });
+    canvas.addEventListener('mousemove', e => {
+        if(pointer.isDown) updatePointerPos(e);
+    });
+    canvas.addEventListener('mouseup', e => {
+        e.preventDefault();
+        pointer.isDown = false;
+    });
 
-    window.addEventListener('touchmove', updatePointerPos, {passive: false});
-    window.addEventListener('touchstart', e => { 
-        if(e.target.tagName !== 'BUTTON') { pointer.isDown = true; updatePointerPos(e); }
+    canvas.addEventListener('touchstart', e => {
+        e.preventDefault();
+        pointer.isDown = true;
+        updatePointerPos(e);
     }, {passive: false});
-    window.addEventListener('touchend', () => { pointer.isDown = false; pointer.active = false; });
+    canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+        updatePointerPos(e);
+    }, {passive: false});
+    canvas.addEventListener('touchend', e => {
+        e.preventDefault();
+        pointer.isDown = false;
+        pointer.active = false;
+    }, {passive: false});
 
-    // Clases
+
+    // --- CLASSES ---
     class Player {
         constructor() {
-            this.w = 50;
-            this.h = 60;
+            this.w = Math.min(50, width * 0.12);
+            this.h = this.w * 1.2;
             this.x = width / 2;
-            this.y = height - 100;
-            this.speed = 7;
+            this.y = height - 120;
+            this.speed = width > 600 ? 7 : 5;
             this.weaponLevel = 1; 
             this.cooldown = 0;
             this.maxCooldown = 15;
@@ -583,17 +630,17 @@
             if (keys.ArrowUp || keys.w) this.y -= this.speed;
             if (keys.ArrowDown || keys.s) this.y += this.speed;
 
-            if (pointer.active) {
-                this.x += (pointer.x - this.x) * 0.15;
-                this.y += (pointer.y - this.y) * 0.15;
+            if (pointer.active && pointer.isDown) {
+                this.x += (pointer.x - this.x) * 0.2;
+                this.y += (pointer.y - this.y) * 0.2;
             }
 
             this.x = Math.max(this.w/2, Math.min(width - this.w/2, this.x));
-            this.y = Math.max(this.h/2, Math.min(height - this.h/2, this.y));
+            this.y = Math.max(this.h/2 + 50, Math.min(height - this.h/2 - 10, this.y));
 
             if (this.cooldown > 0) this.cooldown--;
             
-            if ((keys[' '] || pointer.isDown) && this.cooldown <= 0) {
+            if ((keys[' '] || pointer.isDown) && this.cooldown <= 0 && state === 'PLAYING') {
                 this.shoot();
                 this.cooldown = this.maxCooldown;
             }
@@ -606,9 +653,9 @@
             if (state === 'PLAYING') {
                 ctx.fillStyle = (frameCount % 4 < 2) ? '#ff9900' : '#ff3300';
                 ctx.beginPath();
-                ctx.moveTo(-10, this.h/2 - 5);
-                ctx.lineTo(10, this.h/2 - 5);
-                ctx.lineTo(0, this.h/2 + 20 + Math.random()*10);
+                ctx.moveTo(-this.w*0.2, this.h/2 - 5);
+                ctx.lineTo(this.w*0.2, this.h/2 - 5);
+                ctx.lineTo(0, this.h/2 + 15 + Math.random()*15);
                 ctx.fill();
             }
 
@@ -627,13 +674,13 @@
 
             ctx.fillStyle = '#fff';
             ctx.beginPath();
-            ctx.ellipse(0, -5, 8, 15, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, -this.h*0.1, this.w*0.15, this.h*0.25, 0, 0, Math.PI * 2);
             ctx.fill();
 
             if (this.weaponLevel >= 2) {
                 ctx.fillStyle = '#ff00ff';
-                ctx.fillRect(-this.w/2 - 5, 0, 10, 20);
-                ctx.fillRect(this.w/2 - 5, 0, 10, 20);
+                ctx.fillRect(-this.w/2 - 5, 0, 10, 15);
+                ctx.fillRect(this.w/2 - 5, 0, 10, 15);
             }
 
             ctx.restore();
@@ -642,15 +689,16 @@
         shoot() {
             AudioSys.shoot();
             const yOffset = -this.h/2;
+            const bulletSpeed = -15; 
             if (this.weaponLevel === 1) {
-                bullets.push(new Bullet(this.x, this.y + yOffset, 0, -12, '#00f0ff'));
+                bullets.push(new Bullet(this.x, this.y + yOffset, 0, bulletSpeed, '#00f0ff'));
             } else if (this.weaponLevel === 2) {
-                bullets.push(new Bullet(this.x - 15, this.y + yOffset + 10, 0, -12, '#ff00ff'));
-                bullets.push(new Bullet(this.x + 15, this.y + yOffset + 10, 0, -12, '#ff00ff'));
+                bullets.push(new Bullet(this.x - 12, this.y + yOffset + 10, 0, bulletSpeed, '#ff00ff'));
+                bullets.push(new Bullet(this.x + 12, this.y + yOffset + 10, 0, bulletSpeed, '#ff00ff'));
             } else {
-                bullets.push(new Bullet(this.x, this.y + yOffset, 0, -12, '#00ff66'));
-                bullets.push(new Bullet(this.x - 20, this.y + yOffset + 10, -3, -11, '#00ff66'));
-                bullets.push(new Bullet(this.x + 20, this.y + yOffset + 10, 3, -11, '#00ff66'));
+                bullets.push(new Bullet(this.x, this.y + yOffset, 0, bulletSpeed, '#00ff66'));
+                bullets.push(new Bullet(this.x - 15, this.y + yOffset + 10, -2, bulletSpeed + 1, '#00ff66'));
+                bullets.push(new Bullet(this.x + 15, this.y + yOffset + 10, 2, bulletSpeed + 1, '#00ff66'));
             }
         }
     }
@@ -674,11 +722,13 @@
 
     class Enemy {
         constructor(text, isCorrect, xPosition) {
-            this.w = 80; this.h = 60;
+            this.w = Math.min(80, width * 0.22); 
+            this.h = this.w * 0.75;
             this.x = xPosition; this.y = -100;
             
-            let baseSpeed = 0.6 + (score * 0.003); 
-            if (baseSpeed > 3.0) baseSpeed = 3.0; 
+            let baseSpeed = width < 600 ? 0.8 : 0.6; 
+            baseSpeed += (score * 0.003); 
+            if (baseSpeed > 3.5) baseSpeed = 3.5; 
             
             this.dy = baseSpeed + (Math.random() * 0.3); 
             this.text = text; this.isCorrect = isCorrect;
@@ -728,10 +778,11 @@
             ctx.closePath();
             ctx.fill(); ctx.stroke();
 
+            let fontSize = Math.max(12, Math.min(20, this.w * 0.25));
             ctx.fillStyle = '#fff';
-            ctx.font = 'bold 18px "Rajdhani", sans-serif';
+            ctx.font = `bold ${fontSize}px "Rajdhani", sans-serif`;
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.lineWidth = 3; ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2; ctx.strokeStyle = '#000';
             ctx.strokeText(this.text, 0, 0); ctx.fillText(this.text, 0, 0);
 
             ctx.restore();
@@ -760,11 +811,12 @@
         }
     }
 
-    // --- FUNCIONES DEL JUEGO ---
+    // --- GAME FUNCTIONS ---
 
     function initStars() {
         stars = [];
-        for (let i = 0; i < 150; i++) {
+        const starCount = width < 600 ? 70 : 150; 
+        for (let i = 0; i < starCount; i++) {
             stars.push({
                 x: Math.random() * width, y: Math.random() * height,
                 size: Math.random() * 2 + 0.5, speed: Math.random() * 3 + 0.5
@@ -816,14 +868,15 @@
         
         currentQuestion.options.forEach((opt, index) => {
             const isCorrect = (opt === currentQuestion.answer);
-            const xPos = spacing * (index + 1) + (Math.random() * 40 - 20);
+            const xPos = spacing * (index + 1) + (Math.random() * 20 - 10);
             enemies.push(new Enemy(opt, isCorrect, xPos));
         });
     }
 
     function createExplosion(x, y, color) {
         AudioSys.explosion();
-        for (let i = 0; i < 30; i++) particles.push(new Particle(x, y, color));
+        const pCount = width < 600 ? 15 : 30; 
+        for (let i = 0; i < pCount; i++) particles.push(new Particle(x, y, color));
     }
 
     function checkCollisions() {
@@ -842,7 +895,7 @@
         for (let j = enemies.length - 1; j >= 0; j--) {
             let e = enemies[j];
             const dist = Math.hypot(player.x - e.x, player.y - e.y);
-            if (dist < (player.w/2 + e.w/2 - 10)) {
+            if (dist < (player.w/2 + e.w/2 - 5)) {
                 e.markedForDeletion = true;
                 createExplosion(e.x, e.y, e.color);
                 handleAnswer(e.isCorrect); 
@@ -862,7 +915,7 @@
         setTimeout(() => {
             messageBox.style.opacity = 0;
             questionBox.classList.add('hidden');
-        }, 1800);
+        }, 1500);
     }
 
     function updateScore(pts) {
@@ -886,13 +939,15 @@
     function loseLife() {
         lives--; shakeTime = 20; combo = 0; player.weaponLevel = 1; 
         updateLives(); powerUpInd.style.display = 'none';
+        
+        if(navigator.vibrate) navigator.vibrate(200);
     }
 
     function playerMissedCorrect() {
         AudioSys.wrong(); loseLife(); showMessage("MISSED!", false);
         enemies.forEach(e => { createExplosion(e.x, e.y, e.color); e.markedForDeletion = true; });
         questionActive = false;
-        setTimeout(() => { if(state === 'PLAYING') spawnQuestion(); }, 2000);
+        setTimeout(() => { if(state === 'PLAYING') spawnQuestion(); }, 1500);
     }
 
     function handleAnswer(isCorrect) {
@@ -913,7 +968,7 @@
             AudioSys.wrong(); updateScore(-5); loseLife(); showMessage("WRONG!", false);
         }
 
-        setTimeout(() => { if (state === 'PLAYING') spawnQuestion(); }, 2000);
+        setTimeout(() => { if (state === 'PLAYING') spawnQuestion(); }, 1500);
     }
 
     function togglePause() {
@@ -930,14 +985,20 @@
 
     function gameOver() {
         state = 'GAMEOVER';
+        pointer.isDown = false; 
         AudioSys.stopBGM();
         document.getElementById('hud').classList.add('hidden');
         questionBox.classList.add('hidden');
         document.getElementById('gameOverMenu').classList.remove('hidden');
         document.getElementById('finalScore').textContent = score;
+        
+        // Exit fullscreen if possible when game over
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(()=>{});
+        }
     }
 
-    // --- BUCLE PRINCIPAL ---
+    // --- MAIN LOOP ---
 
     function loop(timestamp) {
         frameCount++;
@@ -953,7 +1014,6 @@
 
         drawBackground();
 
-        // Actualizar lógica solo si el juego está en marcha (no pausado)
         if (state === 'PLAYING') {
             player.update();
             bullets.forEach(b => b.update());
@@ -968,7 +1028,6 @@
              particles = particles.filter(p => p.life > 0);
         }
 
-        // Dibujar en pantalla (siempre dibuja, incluso en pausa)
         if (state === 'PLAYING' || state === 'PAUSED') {
             player.draw(ctx);
             bullets.forEach(b => b.draw(ctx));
@@ -983,9 +1042,11 @@
         requestAnimationFrame(loop);
     }
 
-    // --- CONTROL DE FLUJO ---
+    // --- FLOW CONTROL ---
 
     function startGame(selectedDifficulty) {
+        requestFullScreen(); // Solicita pantalla completa al iniciar el juego
+        
         AudioSys.init(); 
         difficulty = selectedDifficulty;
         currentLevel = difficulty === 'beginner' ? 1 : (difficulty === 'normal' ? 2 : 3);
@@ -1043,6 +1104,11 @@
         document.getElementById('startMenu').classList.remove('hidden');
         state = 'MENU';
         initStars();
+        
+        // Opcional: salir de pantalla completa al volver al menú
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(()=>{});
+        }
     }
 
     initStars();
