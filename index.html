@@ -291,10 +291,14 @@
         <h1 class="title">
             GALAXY<br>GRAMMAR ATTACK
             <span class="title-sub">(Simple Present | Auxiliary verb)</span>
-            <span class="title-sub">Developed by : Hugo Luque</span>
+            <span class="title-sub">Developed by: Hugo Luque</span>
         </h1>
         <p class="subtitle">Destroy the correct auxiliary verb!</p>
-        <p class="instructions">📱 MOBILE/PC: Press and hold to move & shoot<br>💻 KEYBOARD: Arrows to move, Space to shoot<br>⏸️ PAUSE: 'P' or 'Esc'</p>
+        <p class="instructions">
+            📱 MOBILE: Drag to move, <b>DOUBLE TAP</b> to shoot<br>
+            💻 PC: Space/Click to shoot, Arrows to move<br>
+            ⏸️ PAUSE: 'P' or 'Esc'
+        </p>
         <button class="btn" onclick="startGame('beginner')">Beginner</button>
         <button class="btn btn-normal" onclick="startGame('normal')">Normal</button>
         <button class="btn btn-advanced" onclick="startGame('advanced')">Advanced</button>
@@ -560,7 +564,17 @@
 
     // --- MOBILE & KEYBOARD CONTROLS ---
     const keys = { ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false, a: false, d: false, w: false, s: false, ' ': false };
-    const pointer = { x: width / 2, y: height - 100, active: false, isDown: false };
+    
+    // Variables para control de puntero e identificación de toques vs mouse
+    const pointer = { 
+        x: width / 2, 
+        y: height - 100, 
+        active: false, 
+        isDown: false, 
+        isTouch: false, 
+        isShootingTouch: false 
+    };
+    let lastTapTime = 0;
 
     window.addEventListener('keydown', e => { 
         if(keys.hasOwnProperty(e.key)) keys[e.key] = true; 
@@ -581,8 +595,10 @@
         pointer.y = e.touches ? clientY - 80 : clientY - 40;
     }
 
+    // Eventos Mouse (Desktop)
     canvas.addEventListener('mousedown', e => {
         e.preventDefault();
+        pointer.isTouch = false;
         pointer.isDown = true;
         updatePointerPos(e);
     });
@@ -594,19 +610,38 @@
         pointer.isDown = false;
     });
 
+    // Eventos Touch (Mobile/Tablet)
     canvas.addEventListener('touchstart', e => {
         e.preventDefault();
+        pointer.isTouch = true;
         pointer.isDown = true;
         updatePointerPos(e);
+
+        // Lógica de Doble Toque (Double Tap) para disparar
+        const now = Date.now();
+        if (now - lastTapTime < 300) { 
+            // Si el tiempo entre toques es menor a 300ms, activamos disparo
+            pointer.isShootingTouch = true;
+        } else {
+            // Primer toque, solo mueve
+            pointer.isShootingTouch = false;
+        }
+        lastTapTime = now;
     }, {passive: false});
+
     canvas.addEventListener('touchmove', e => {
         e.preventDefault();
         updatePointerPos(e);
     }, {passive: false});
+
     canvas.addEventListener('touchend', e => {
         e.preventDefault();
-        pointer.isDown = false;
-        pointer.active = false;
+        // Solo reseteamos si ya no hay dedos en la pantalla
+        if (e.touches.length === 0) {
+            pointer.isDown = false;
+            pointer.active = false;
+            pointer.isShootingTouch = false;
+        }
     }, {passive: false});
 
 
@@ -640,7 +675,19 @@
 
             if (this.cooldown > 0) this.cooldown--;
             
-            if ((keys[' '] || pointer.isDown) && this.cooldown <= 0 && state === 'PLAYING') {
+            // Determinar si debe disparar dependiendo del dispositivo
+            let shouldShoot = keys[' ']; // Barra espaciadora siempre dispara
+            
+            if (!pointer.isTouch && pointer.isDown) {
+                // En PC (Mouse), mantener click izquierdo dispara
+                shouldShoot = true;
+            }
+            if (pointer.isTouch && pointer.isShootingTouch) {
+                // En Móvil/Tablet, solo el DOBLE TOQUE activa el disparo
+                shouldShoot = true;
+            }
+
+            if (shouldShoot && this.cooldown <= 0 && state === 'PLAYING') {
                 this.shoot();
                 this.cooldown = this.maxCooldown;
             }
